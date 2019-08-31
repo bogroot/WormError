@@ -17,7 +17,7 @@ public class Bullet : MonoBehaviour
        if (this.gameObject == true) {
             Destroy(this.gameObject, 5);
        }
-       
+       Debug.Log("ssss");
    }
 
    private void OnCollisionEnter2D(Collision2D  other)
