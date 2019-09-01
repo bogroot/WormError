@@ -5,15 +5,14 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     Rigidbody2D rig;
-    public float velocity = 3;
+    public float velocity = 5;
     private GameController gameController;
     private void Start()
     {   
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
         rig = GetComponent<Rigidbody2D>();
     }
-   public void Fly() {
-       GetComponent<Rigidbody2D>().velocity = new Vector3(velocity, 0, 0);
+   public void Fire() {
        if (this.gameObject == true) {
             Destroy(this.gameObject, 5);
        }
@@ -26,7 +25,15 @@ public class Bullet : MonoBehaviour
            Debug.Log("hit the target");
            gameController.changePlayer(other.gameObject);
            Destroy(this.gameObject);
+       } 
+       else if (other.gameObject.tag == "Obstacle") {
+           Debug.Log("hit the Obstacle");
+           Destroy(this.gameObject);
        }
+   }
+
+   private void Update() {
+       transform.Translate(Vector3.right * velocity * Time.deltaTime);
    }
 
   
