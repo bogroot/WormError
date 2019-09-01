@@ -21,15 +21,16 @@ public class Player : MonoBehaviour {
 	public float wallSitckTime = 0.25f;
 	float timeToWallUnStick;
     Vector3 velocity;
+	Vector3 lastVelocity;
     Controller2D controller;
 	Vector2 directionalInput;
 	bool wallSliding;
+	bool fireState;
 	int wallDirX;
-	private Transform Launcher;
+	private GameObject pointers;
 
 	void Start() {
 		controller = GetComponent<Controller2D> ();
-		Launcher = transform.Find("Launcher");
 		gravity = -(2 * maxJumpHeight) / Mathf.Pow (timeTojumpApex, 2);
 		maxJumpVelocity = Mathf.Abs(gravity) * timeTojumpApex;
 		minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
@@ -65,9 +66,18 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	public void Fire() {
-		GameObject bullet = (GameObject)Instantiate(Resources.Load("Prefabs/Bullet"), Launcher.position, Launcher.rotation);
-		bullet.GetComponent<Bullet>().Fly();
+	//生成瞄准器
+	public void SetPointers() {
+		pointers = (GameObject)Instantiate(Resources.Load("Prefabs/pointers"), transform.position, transform.rotation);
+		pointers.transform.parent = transform;
+	}
+
+	//瞄准完毕后发射子弹
+	public void LaunchBullet() {
+		if (pointers == true) {
+			//调用真正的发射函数
+			pointers.GetComponent<Pointers>().LaunchBullet();
+		}
 	}
 
 	//改变朝向
@@ -85,24 +95,38 @@ public class Player : MonoBehaviour {
 	}
 
 	void Update() {
-		CalculateVelocity();
-		HandleWallSilding();
-		directionalInput = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
-		Filp(directionalInput);
-
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            OnJumpInputDown();
+		
+		if (Input.GetKeyDown(KeyCode.Tab)) {
+			fireState = true;
+            SetPointers();
+        }
+		if (Input.GetKey(KeyCode.Tab)) {
+			lastVelocity = velocity * 0.05f;
+			//velocity = Vector3.zero;
+		}
+		if (Input.GetKeyUp(KeyCode.Tab)) {
+			fireState = false;
+            LaunchBullet();
         }
 
-        if (Input.GetKeyUp(KeyCode.Space)) {
-            OnJumpInputUp();
+		if (fireState == true) {
+			controller.Move (lastVelocity * Time.deltaTime, directionalInput);
+		} else {
+			CalculateVelocity();
+			HandleWallSilding();
+			directionalInput = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
+			Filp(directionalInput);
+
+        	if (Input.GetKeyDown(KeyCode.Space)) {
+            	OnJumpInputDown();
         }
 
-		 if (Input.GetKeyUp(KeyCode.Tab)) {
-            Fire();
+       		 if (Input.GetKeyUp(KeyCode.Space)) {
+            	 OnJumpInputUp();
         }
-		controller.Move (velocity * Time.deltaTime, directionalInput);
-
+			controller.Move (velocity * Time.deltaTime, directionalInput);
+		}
+		
 		//挤压缓冲
 		if (controller.collisions.above || controller.collisions.below) {
 			velocity.y = 0;
