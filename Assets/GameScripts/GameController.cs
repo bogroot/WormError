@@ -19,8 +19,14 @@ public class GameController : MonoBehaviour
         mainPlayer.tag = "Enemy";
         Destroy(mainPlayer.GetComponent<Player>());
         Destroy(mainPlayer.GetComponent<Controller2D>());
+        if (!mainPlayer.GetComponent<Rigidbody2D>()) {
+            mainPlayer.AddComponent<Rigidbody2D>();
+        }
         mainPlayer = newPlayer;
         mainPlayer.tag = "Player";
+        if (mainPlayer.GetComponent<Rigidbody2D>()) {
+            Destroy(mainPlayer.GetComponent<Rigidbody2D>());
+        }
         newPlayer.AddComponent<Player>();
         newPlayer.AddComponent<Controller2D>();
         cameraController.target = mainPlayer.GetComponent<Controller2D>();

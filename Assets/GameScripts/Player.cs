@@ -68,7 +68,7 @@ public class Player : MonoBehaviour {
 
 	//生成瞄准器
 	public void SetPointers() {
-		pointers = (GameObject)Instantiate(Resources.Load("Prefabs/pointers"), transform.position, transform.rotation);
+		pointers = (GameObject)Instantiate(Resources.Load("Prefabs/Pointers"), transform.position, transform.rotation);
 		pointers.transform.parent = transform;
 	}
 
@@ -81,18 +81,18 @@ public class Player : MonoBehaviour {
 	}
 
 	//改变朝向
-	public void Filp(Vector2 playerInput) {
-		if (playerInput.x > 0) {
-			if (GetComponent<SpriteRenderer>().flipX == false) {
-				GetComponent<SpriteRenderer>().flipX = true;
-			}
+	// public void Filp(Vector2 playerInput) {
+	// 	if (playerInput.x > 0) {
+	// 		if (GetComponent<SpriteRenderer>().flipX == false) {
+	// 			GetComponent<SpriteRenderer>().flipX = true;
+	// 		}
 			
-		} else if (playerInput.x < 0) {
-			if (GetComponent<SpriteRenderer>().flipX == true) {
-				GetComponent<SpriteRenderer>().flipX = false;
-			}
-		}
-	}
+	// 	} else if (playerInput.x < 0) {
+	// 		if (GetComponent<SpriteRenderer>().flipX == true) {
+	// 			GetComponent<SpriteRenderer>().flipX = false;
+	// 		}
+	// 	}
+	// }
 
 	void Update() {
 		
@@ -115,7 +115,7 @@ public class Player : MonoBehaviour {
 			CalculateVelocity();
 			HandleWallSilding();
 			directionalInput = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
-			Filp(directionalInput);
+			//Filp(directionalInput);
 
         	if (Input.GetKeyDown(KeyCode.Space)) {
             	OnJumpInputDown();
